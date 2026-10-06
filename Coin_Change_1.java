@@ -1,51 +1,24 @@
-import java.util.Arrays;
+public int coinChange(int[] coins, int amt) {
 
-public class CoinChange {
+    int[] dp = new int[amt + 1];
 
-    public int coinChange(int[] coins, int amount) {
+    dp[0] = 0;
 
-        // dp[i] = minimum number of coins needed
-        // to make amount i
-        int[] dp = new int[amount + 1];
+    for (int i = 1; i <= amt; i++) {
 
-        // -1 means amount cannot be formed yet
-        Arrays.fill(dp, -1);
+        dp[i] = Integer.MAX_VALUE;
 
-        // 0 amount requires 0 coins
-        dp[0] = 0;
+        for (int coin : coins) {
 
-        for (int i = 1; i <= amount; i++) {
+            if (coin <= i && dp[i - coin] != Integer.MAX_VALUE) {
 
-            int minCoins = Integer.MAX_VALUE;
-
-            for (int coin : coins) {
-
-                if (coin <= i && dp[i - coin] != -1) {
-
-                    minCoins = Math.min(
-                        minCoins,
-                        dp[i - coin] + 1
-                    );
-                }
-            }
-
-            if (minCoins != Integer.MAX_VALUE) {
-                dp[i] = minCoins;
+                dp[i] = Math.min(dp[i], 1 + dp[i - coin]);
             }
         }
-
-        return dp[amount];
     }
 
-    public static void main(String[] args) {
+    if (dp[amt] == Integer.MAX_VALUE)
+        return -1;
 
-        CoinChange solution = new CoinChange();
-
-        int[] coins = {1, 2, 5};
-        int amount = 11;
-
-        int result = solution.coinChange(coins, amount);
-
-        System.out.println("Minimum coins: " + result);
-    }
+    return dp[amt];
 }
